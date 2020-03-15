@@ -4,7 +4,7 @@ const ipcRenderer = window.require('electron').ipcRenderer;
 
 const App = () => {
 
-  const [value, setValue] = useState('https://www.youtube.com/watch?v=dZJiY8SHHWI');
+  const [url, setUrl] = useState('https://www.youtube.com/watch?v=dZJiY8SHHWI');
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
@@ -22,15 +22,33 @@ const App = () => {
   }, []);
 
   const sendURL = () => {
-    ipcRenderer.send('value', value);
+    if (isYouTubeUrl(url)) {
+      ipcRenderer.send('url', url);
+    } else {
+      ipcRenderer.send('error121', 'Please enter valid youtube video link');
+    }
+  }
+
+  const isYouTubeUrl = (url) => {
+    const regex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
+    const found = url.match(regex);
+
+    if (found != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   return (
     <div className="App">
-      <input type="text" placeholder="Enter The URL" value={value} onChange={(e) => setValue(e.target.value)} />
+      <input type="text" placeholder="Enter The URL" value={url} onChange={(e) => setUrl(e.target.value)} />
       <button onClick={() => sendURL()} disabled={disabled}>
-        Start
+        Search
       </button>
+      <br />
+      {/* More Controls */}
+      <input type="text" />
     </div>
   );
 }
