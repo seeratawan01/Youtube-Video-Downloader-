@@ -1,3 +1,33 @@
 .App {
   text-align: center;
+  background-color: #f9f9f9;
+  margin-top: 50px;
+}
+
+input,
+button,
+select {
+  padding: 0.5rem;
+  border-radius: 2px;
+  border: 1px solid #d4d4d4;
+}
+
+button {
+  background-color: #ff0000;
+  color: #f9f9f9;
+  border: 1px solid #ff0000;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff0000d2;
+}
+
+button:disabled {
+  background-color: #4e4e4ed2;
+  border: 1px solid #4e4e4ed2;
+}
+
+.box {
+  margin: 12px 0;
 }

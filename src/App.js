@@ -57,27 +57,29 @@ const App = () => {
 
   return (
     <div className="App">
-      <input type="text" placeholder="Enter The URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-      <button onClick={() => sendURL()} disabled={disabled}>
-        Search
+      <div className='box'>
+        <input type="text" placeholder="Enter The URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+        <button onClick={() => sendURL()} disabled={disabled}>
+          Search
       </button>
-      <br />
+      </div>
+
       {/* More Controls */}
       {
         ('formats' in info) ? (
           <>
-            <label>Select Quality</label>
-            <select value={`${options[0]},${options[1]}`} onChange={(e) => setOptions(e.target.value.split(','))}>
-              {
-                info.formats.map(item => {
-                  return <option key={item.itag} value={`${item.itag},${item.filetype}`}>{item.resolution} ({item.filetype}) </option>
-                })
-              }
-            </select>
-            <button onClick={() => downloadVideo()} disabled={download}>
-              Download Now
+            <div className='box'>
+              <select title="Select Format" value={`${options[0]},${options[1]}`} onChange={(e) => setOptions(e.target.value.split(','))}>
+                {
+                  info.formats.map(item => {
+                    return <option key={item.itag} value={`${item.itag},${item.filetype}`}>{item.resolution} ({item.filetype}) </option>
+                  })
+                }
+              </select>
+              <button onClick={() => downloadVideo()} disabled={download}>
+                Download Now
             </button>
-            <br />
+            </div>
             <img src={info.thumbnail} alt={info.name} width="250" />
           </>
         ) : null
