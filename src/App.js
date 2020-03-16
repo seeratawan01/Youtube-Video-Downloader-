@@ -58,6 +58,9 @@ const App = () => {
   return (
     <div className="App">
       <div className='box'>
+        <h4>Youtube Video Downloader</h4>
+      </div>
+      <div className='box'>
         <input type="text" placeholder="Enter The URL" value={url} onChange={(e) => setUrl(e.target.value)} />
         <button onClick={() => sendURL()} disabled={disabled}>
           Search

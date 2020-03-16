@@ -13,6 +13,10 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 500,
         height: 600,
+        center: true,
+        resizable: false,
+        fullscreenable: false,
+        autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js')
