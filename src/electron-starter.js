@@ -2,10 +2,8 @@
 const { ipcMain, app, BrowserWindow, dialog } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
+const { downloadVideo, getVideoInfo } = require('./ElectronComponents/youtube')
 
-// Youtube
-const fs = require('fs')
-const youtubedl = require('youtube-dl')
 const title = 'Youtube Video Downloader'
 
 
@@ -23,28 +21,37 @@ function createWindow() {
 
     mainWindow.setTitle(title);
 
-    // and load the index.html of the app.
-    // mainWindow.loadURL('http://localhost:3000');
-
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
     if (isDev) {
         // Open the DevTools.
         //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
         mainWindow.webContents.openDevTools();
     }
-
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
 }
 
 // When URL is recieved
 ipcMain.on('url', (event, arg) => {
-    downloadVideo(arg);
-    event.sender.send('reply', 'get')
+    // getDirectory(arg);
+
+    getVideoInfo(arg, (data) => {
+
+        const mainWindow = BrowserWindow.getAllWindows()[0];
+
+        if (data != null) {
+            // When finish, send data to renderer
+            mainWindow.webContents.send('videoInfo', data)
+        } else {
+            mainWindow.webContents.send('videoInfo', null)
+        }
+
+    });
 })
 
-const downloadVideo = (url) => {
+ipcMain.on('download', (event, arg) => {
+    getDirectory(arg.url, arg.f[0], arg.f[1]);
+})
+
+const getDirectory = (url, f, ext) => {
     const mainWindow = BrowserWindow.getAllWindows()[0];
 
     dialog.showOpenDialog(mainWindow, {
@@ -53,50 +60,12 @@ const downloadVideo = (url) => {
         if (result.filePaths.length > 0) {
             let dir = result.filePaths[0];
 
+            downloadVideo(title, mainWindow, { dir, url, f, ext });
 
-            const video = youtubedl(url,
-                // Optional arguments passed to youtube-dl.
-                ['-f', '18']
-            )
-
-            var size = 0
-            // Will be called when the download starts.
-            video.on('info', function (info) {
-                size = info.size
-
-                console.log('Got video info')
-                var file = path.join(dir, info._filename)
-                video.pipe(fs.createWriteStream(file))
-            })
-
-            var pos = 0
-            video.on('data', function data(chunk) {
-                pos += chunk.length
-
-                // `size` should not be 0 here.
-                if (size) {
-                    let p = ((pos / size)).toFixed(2);
-                    mainWindow.setProgressBar(parseFloat(p))
-                    mainWindow.setTitle(`${title} - (${p * 100})`);
-                }
-            })
-
-            video.on('end', function end() {
-                'use strict'
-                console.log('\nDone')
-                mainWindow.setProgressBar(-1)
-
-                // When finish, send signal to renderer
-                mainWindow.webContents.send('done', 'done')
-            })
         }
     }).catch(err => {
         console.log(err)
     })
-
-
-
-
 
 }
 
@@ -119,18 +88,14 @@ app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
 
-
-
-
-// Errors Handlers
-ipcMain.on('error121', (event, arg) => {
+// Messages Handlers
+ipcMain.on('error', (event, arg) => {
     const mainWindow = BrowserWindow.getAllWindows()[0];
     dialog.showMessageBoxSync(mainWindow, {
-        type: 'info',
-        buttons: ['Ok'],
+        type: 'error',
+        buttons: ['Cancel'],
+        title: "Error Message",
         message: arg
     })
 })
