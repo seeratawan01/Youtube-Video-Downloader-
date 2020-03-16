@@ -1,10 +1,10 @@
-# Youtube Video Downloader Using ElectronJs and React
+# Youtube Video Downloader Using ElectronJS and React
 
 ### `npm install`
 
 To install dependencies<br />
 
-### `yarn electron-dev`
+### `npm run electron-dev`
 
 Runs the app in the development mode.<br />
 
