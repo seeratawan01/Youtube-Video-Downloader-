@@ -1,6 +1,6 @@
 # Youtube Video Downloader Using ElectronJs and React
 
-### `yarn`
+### `npm install`
 
 To install dependencies<br />
 
