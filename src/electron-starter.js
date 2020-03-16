@@ -2,7 +2,7 @@
 const { ipcMain, app, BrowserWindow, dialog } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
-const { downloadVideo, getVideoInfo } = require('./ElectronComponents/youtube')
+const { downloadVideo, getVideoInfo } = require('./Component/youtube')
 
 const title = 'Youtube Video Downloader'
 

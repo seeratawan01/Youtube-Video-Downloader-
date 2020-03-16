@@ -77,6 +77,8 @@ const App = () => {
             <button onClick={() => downloadVideo()} disabled={download}>
               Download Now
             </button>
+            <br />
+            <img src={info.thumbnail} alt={info.name} width="250" />
           </>
         ) : null
       }
